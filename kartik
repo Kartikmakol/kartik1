@@ -1,0 +1,105 @@
+coversQ[R_?partialorderQ, {x_, y_}] :=
+Module[{z, checkset}, Catch[If[x  y, Throw[False]];
+If[! MemberQ[R, {x, y}] || x  y, Throw[False]];
+checkset = Complement[finddomain[R], {x, y}];
+Do[If[MemberQ[R, {x, z}] && MemberQ[R, {z, y}] && x ≠ z && z ≠ y, Throw[False]],
+{z, checkset}];
+Throw[True]]]
+
+divL[n_Integer] := div[Divisors[n]]
+
+coveringRelationQ[R_?partialorderQ] := Select[R, coversQ[R, #] &]
+
+LayeredGraphPlot[{1 -> 2, 2 -> 3, 1 -> 3, 1 -> 4, 2 -> 4, 1 -> 5}, VertexLabeling -> True]
+
+hasseDiagram[R_?partialorderQ] :=
+Module[{edges}, edges = coveringRelationQ[R] /. {a_, b_} -> Rule[b, a];
+LayeredGraphPlot[edges, VertexLabeling -> True]]
+
+minElts[R_?partialorderQ, S_List] := Module[{M, s, t}, M = S;
+Do[Do[If[MemberQ[R, {t, s}], M = Complement[M, {s}]],
+{t, Complement[S, {s}]}], {s, S}];
+M]
+
+invR[R_?relQ] := Reverse[R, 2];
+maxElts[R_?partialorderQ, S_List] := minElts[invR[R], S]
+maxElts[R5, finddomain[R5]]
+
+S = {1, 2, 3, 4, 5, 6, 7};
+powerset = Subsets[S];
+coveringRelations =
+Flatten[Table[If[SubsetQ[powerset〚i〛, powerset〚j〛] && i ≠ j, DirectedEdge[powerset〚i〛,
+powerset〚j〛], Null], {i, Length[powerset]}, {j, Length[powerset]}]];
+
+cleanedCoveringRelations = DeleteCases[coveringRelations, Null]
+GraphPlot[cleanedCoveringRelations, VertexLabeling  True, DirectedEdges  True]
+
+minimalElements = Select[powerset, FreeQ[powerset, #, {2}] &];
+maximalElements = Select[powerset, FreeQ[powerset, #, {1}] &];
+
+
+
+
+upperBoundQ[R_?relationQ, S_List, u_] := Module[{s},
+Catch[
+Do[If[! MemberQ[R, {s, u}], Throw[False]], {s, S}];
+Throw[True]]]
+
+upperBounds[R_?relationQ, S_List] := Module[{domR, D, U = {}},
+domR = findDomain[R];
+Do[If[upperBoundQ[R, s, d], AppendTo[U, d]], {d, domR}];
+U]
+
+leastUpperBound[R_?relationQ, S_List] := Module[{U, M},
+U = upperBounds[R, S];
+M = minimalElements[R, U];
+If[Length[M] ≠ 1, Null, M〚1〛]]
+
+hasLUBs[R_?relationQ] := Module[{domR, a, b},
+domR = findDomain[R];
+Catch[Do[If[leastUpperBound[R, {a, b}] === Null, Throw[False]],{a, domR}, {b, domR}];
+Throw[True]]]
+
+hasGLBs[R_?relationQ] := hasLUBs[inverseRelation[R]]
+
+ latticeQ[R_?relationQ] := hasLUBs[R] && hasGLBs[R]
+
+
+
+
+BooleanTable[{p, q, r, f[p, q, r]}, {p, q, r}] // TableForm
+
+Boole[BooleanTable[{p, q, r, f[p, q, r]}, {p, q, r}]] // TableForm
+
+TableForm[Boole[BooleanTable[{p, q, r, f[p, q, r]}, {p, q, r}]],
+TableHeadings  {None, {p, q, r, f}}]
+
+
+
+
+
+dual[expr_] := expr /. {And -> Or, Or -> And, False -> True, True -> False}
+
+dual[f[x, y, z]]
+
+BooleanConvert[j[x, y, z], "DNF"]
+BooleanConvert[j[x, y, z], "CNF"]
+
+BooleanFunction[{{1, 1, 0} -> 1, {1, 0, 0} -> 1,
+{0, 1, 0} -> 1, {0, 0, 1} -> 1, {__} -> 0}, {x, y, z}, "DNF"]
+
+BooleanFunction[{{1, 1, 0} -> 1, {1, 0, 0} -> 1,
+{0, 1, 0} -> 1, {0, 0, 1} -> 1, {__} -> 0}, {x, y, z}, "CNF"]
+
+G4 = ¬ a;
+G5 = ¬ c;
+G2 = a ∧ b;
+G3 = G4 ∧ G5 ∧ b;
+G1 = G2 ∨ G3;
+
+
+
+BooleanMinimize[(a ∧ b) ∨ (! a ∧ b ∧ ! c)]
+
+BooleanMinimize[(a ∧ b) ∨ (! a ∧ b ∧ ! c), "CNF"]
+
