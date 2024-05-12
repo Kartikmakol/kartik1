@@ -72,3 +72,79 @@ Sum[A[[i,j]]*x[[j]],{j,i+1,n}])/A[[i,i]]];
 For[m=1,m<=n,m++,x[[m]]=N[x[[m]]]]]
 For[p=1,p<=n,p++,Print["x[", p, "]=", x[[p]]]]
 
+LAGRANGE INTERPOLATION
+xi={-1,0,1,2}
+fi={5,1,1,11}
+n=Length[xi]
+For[k=1,k<=n,k++,
+L[x_]=(ä j=1 k-1 (x-xi[[j]])/(xi[[k]]-xi[[j]]))*(ä j=k+1 n (x-xi[[j]])/(xi[[k]]-xi[[j]]))]
+p[x_]= Σk=1 n L[x]*fi[[k]];
+Print["Lagrange Interpolation polynomial p[x]=",p[x]]
+Print["Simplify Lagrange Interpolation Polynomial p[x]=", Simplify[p[x]]]
+Print["Value of f at x=1.5 is ", p[1.5]]
+
+NEWTON INTERPOLATION
+points={{3,293},{5,508},{6,585},{9,764}};
+n=Length[points]
+y=points[[All,1]]
+f=points[[All, 2]]
+dd[k_]:=Sum[(f[[i]]/Product[If[Equal[j,i],1,(y[[i]]-y[[j]])],{j,1,k}]), {i,1,k}];
+p[x_]=Sum[(dd[i]*Product[If[i<=j,1,x-y[[j]]],{j,1,i-1}]),{i,1,n}]
+Simplify[p[x]]
+Evaluate[p[5.6]]
+
+TRAPEZOIDAL RULE
+f[x_]=Exp[x^2];
+a=0;
+b=2;
+n=10;
+h=(b-a)/n;
+app=N[(h/2)*(f[a]+2*Sum[f[i],{i,a+h,b-h,h}]+f[b])];
+Ex=N[Integrate[f[x],{x,0,2}]];
+Print["The exact value of f(x) is ", Ex]
+Print["The approximate value of f(x) is ", app]
+Print["The error is ", Abs[Ex - app]]
+
+SIMPSON 1/3 RULE
+f[x_]=x^2/(1+x^3);
+a = 0;
+b = 1;
+n = 4;
+h =(b - a)/n;
+app = N[(h/3)*(f[a]+4*Sum[f[i],{i, a + h, b - h, 2h}] +
+2*Sum[f[i],{i,a+2h,b-2h,2h}] + f[b])];
+Ex = N[Integrate[f[x],{x,0,1}]];
+Print["The exact value of f(x) is ", Ex]
+Print["The approximate value of f(x) is ", app]
+Print["The error is ", Abs[Ex - app]]
+
+EULER METHOD ODE
+f[x_,y_]:=x+y;
+a=0;
+b=1;
+n=10;
+y[0]=1;
+h=(b-a)/n;
+For[i=0,i<=n,i++,x[i]=a+h*i;
+y[i+1]=y[i]+h*f[x[i],y[i]];
+Print["Value at x[",i,"]=",x[i], "is" ,N[y[i]]]]
+
+RUNGA KUTTA
+a=2;
+Print["a= ",a];
+b=2.4;
+Print["b= ", b];
+n = 6;
+Print["No. of iterations (n)= ", n];
+y[0] = 3;
+h =(b-a)/n;
+Print["Step Size (h)= ", h];
+Print["\n"]
+For[i=0,i<=n,i++,x[i]=a+i*h;
+k[1]=h*(f[x[i],y[i]]);
+k[2]=h*(f[x[i]+0.5*h,y[i]+0.5*k[1]]);
+k[3]=h*(f[x[i]+0.5*h,y[i]+0.5*k[2]]);
+k[4]=h*(f[x[i+1],y[i]+k[3]]);
+y[i+1]=y[i]+(1/6)*(k[1]+2*k[2]+2*k[3]+k[4]);
+Print["Values at x[", i, "]= ", x[i], " is ", N[y[i]]]];
+f[x_,y_]=x*(y-x);
