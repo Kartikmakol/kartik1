@@ -1,150 +1,48 @@
-BISECTION METHOD
-f[x_]:= x^3+4x^2-10;
-a=1;
-b=2;
-e=0.001;
-Nmax=7;
-If[f[a]*f[b]>0,
-Print["These values don't satisfy the condition of Bisection method"],
-For[i=1,i<=Nmax,i++,c=(a+b)/2;
-If[Abs[(b-a)/2]<e,Return[c],
-Print[i,"th iteration value is:",c];
-Print["Estimated error in",i,"th iteration is: ",(b-a)/2];
-If[f[a]*f[c]<0,b=c,a=c]]]]
-Print["The approximate root is: ", N[c]]
-Plot[f[x],{x,1,2}]
+GENERAL SOLN OF 1ST AND 2ND ORDER PDE
+1st order
 
-NEWTON RAPHSON METHOD
-f[x_]:=x^4-x-10;
-x0 = 2;
-e = 5 * 10^(-5);
-Nmax = 5;
-For[n=1,n<=Nmax,n++,
-xn = N[xn-1 -f[xn-1]/f'[xn-1]];
-If[Abs[xn - xn-1]<e,Return[xn]];
-Print[n,"th iteration value is:", xn];
-Print["Estimated error in ", n, "th iteration is: ", Abs[xn - xn-1]]];
-Print["The approximate root is:", xn]
-Plot[f[x],{x,-1,3}]
+pde = y*D[u[x,y],x]+x*D[u[x,y],y];
+DSolve[pde==0,u[x,y],{x,y}]
 
-SECANT METHOD
-ClearAll;
-SecantMethod[x0_, x1_, m_]:= 
-Module[{p0 = N[x0],p1=N[x1],k = 0},
-While[k<m,
-p2 = p1 - (f[p1]*(p1-p0))/(f[p1]-f[p0]);
-p0=p1;
-p1=p2;
-k=k+1;
-Print["Value at",k,"th iteration is = ",NumberForm[p2,16]];
-]; 
-];
-SecantMethod[0, 1, 8];
-f[x_]:=Cos[x]-x*Exp[x];
+2nd order
 
-LU DECOMPOSITION
-A={{3,2,7},{2,3,1},{3,4,1}};
-MatrixForm[A]
-b={4,5,7};
-{lu,p,c}=LUDecomposition[A]
-L=lu SparseArray[{i_,j_}/; j<i->1,{3,3}]+IdentityMatrix[3];
-MatrixForm[L]
-U=lu SparseArray[{i_,j_}/;j>=i->1,{3,3}];
-MatrixForm[U]
-L.{a,v,w}==b
-sol1=Solve[%,{a,v,w}]
-d=MatrixForm[L.U]
+pde=(D[u[x,y],x]}^2- D[u[x,y],x]*D[u[x,y],y]-2*(D[u[x,y],y])^2;
+DSolve[pde==0,u[x,y],{x,y}]
 
-V={4,-1,6};
-U.{x,y,z}==V
-sol2=Solve[%,{x,y,z}]//N
+SOLN WITH CAUCHY DATA AND PLOT INTEGRAL CURVE
 
-GAUSS JACOBI METHOD / GAUSS SIEDEL METHOD
-n=3;
-A={{27,6,-1},{6,15,2},{1,1,54}};
-MatrixForm[A]
-x={0,0,0}
-b={85,72,110}
-For[k=1,k<=5,k++,
-For[i=1,i<=n,i++,
-x[[i]]=(b[[i]]-Sum[A[[i,j]]*x[[j]],{j,1,i-1}]-
-Sum[A[[i,j]]*x[[j]],{j,i+1,n}])/A[[i,i]]];
-For[m=1,m<=n,m++,x[[m]]=N[x[[m]]]]]
-For[p=1,p<=n,p++,Print["x[", p, "]=", x[[p]]]]
+pde = D[u[x,y], x] - D[u[x, y], y] == 1;
+sol = DSolve[{pde, u[x,0] == x^2}, u[x,y], {x, y}]
+Plot3D[u[x, y] /. sol, {x, -4, 4}, {y, -5, 5}, PlotLabel -> "Integral Surface"]
 
-LAGRANGE INTERPOLATION
-xi={-1,0,1,2}
-fi={5,1,1,11}
-n=Length[xi]
-For[k=1,k<=n,k++,
-L[x_]=(ä j=1 k-1 (x-xi[[j]])/(xi[[k]]-xi[[j]]))*(ä j=k+1 n (x-xi[[j]])/(xi[[k]]-xi[[j]]))]
-p[x_]= Σk=1 n L[x]*fi[[k]];
-Print["Lagrange Interpolation polynomial p[x]=",p[x]]
-Print["Simplify Lagrange Interpolation Polynomial p[x]=", Simplify[p[x]]]
-Print["Value of f at x=1.5 is ", p[1.5]]
+vibrating string problem using D’Alembert/ 1D wave
 
-NEWTON INTERPOLATION
-points={{3,293},{5,508},{6,585},{9,764}};
-n=Length[points]
-y=points[[All,1]]
-f=points[[All, 2]]
-dd[k_]:=Sum[(f[[i]]/Product[If[Equal[j,i],1,(y[[i]]-y[[j]])],{j,1,k}]), {i,1,k}];
-p[x_]=Sum[(dd[i]*Product[If[i<=j,1,x-y[[j]]],{j,1,i-1}]),{i,1,n}]
-Simplify[p[x]]
-Evaluate[p[5.6]]
+f[x_] = Sin[x];    this is u(x,y)
+g[x_] = Cos[x];    this is ut(x,y)
+u[x_, t_] =1/2 (f[x + ct] + f(x - ct]) +1/2c Integration x-ct to x+ct g[y] dy;      esc dd esc
+u[x, t] // Simplify
 
-TRAPEZOIDAL RULE
-f[x_]=Exp[x^2];
-a=0;
-b=2;
-n=10;
-h=(b-a)/n;
-app=N[(h/2)*(f[a]+2*Sum[f[i],{i,a+h,b-h,h}]+f[b])];
-Ex=N[Integrate[f[x],{x,0,2}]];
-Print["The exact value of f(x) is ", Ex]
-Print["The approximate value of f(x) is ", app]
-Print["The error is ", Abs[Ex - app]]
+solution of 1D heat equation
 
-SIMPSON 1/3 RULE
-f[x_]=x^2/(1+x^3);
-a = 0;
-b = 1;
-n = 4;
-h =(b - a)/n;
-app = N[(h/3)*(f[a]+4*Sum[f[i],{i, a + h, b - h, 2h}] +
-2*Sum[f[i],{i,a+2h,b-2h,2h}] + f[b])];
-Ex = N[Integrate[f[x],{x,0,1}]];
-Print["The exact value of f(x) is ", Ex]
-Print["The approximate value of f(x) is ", app]
-Print["The error is ", Abs[Ex - app]]
+ut = 4 uxx, 0 < x < 1, t > 0,
+u(0, t) = 0 = u(1, t), t >= 0,
+u(x, 0) = x^2(1 - x), 0 <=x <= 1
+Clear[u, a, l]
+f[x_] = x^2 * (1 - x);
+l = 1;
+k = 4;
+a[n_] =2/l* Integrate[f[x] * Sin[(n pi x)/l ], {x, 0, 1}];
+a = a[n]
+u = sum n=1 infinity a * Exp[-((n pi)/1)^2 kt] * Sin[(n pi x)/l]
 
-EULER METHOD ODE
-f[x_,y_]:=x+y;
-a=0;
-b=1;
-n=10;
-y[0]=1;
-h=(b-a)/n;
-For[i=0,i<=n,i++,x[i]=a+h*i;
-y[i+1]=y[i]+h*f[x[i],y[i]];
-Print["Value at x[",i,"]=",x[i], "is" ,N[y[i]]]]
-
-RUNGA KUTTA
-a=2;
-Print["a= ",a];
-b=2.4;
-Print["b= ", b];
-n = 6;
-Print["No. of iterations (n)= ", n];
-y[0] = 3;
-h =(b-a)/n;
-Print["Step Size (h)= ", h];
-Print["\n"]
-For[i=0,i<=n,i++,x[i]=a+i*h;
-k[1]=h*(f[x[i],y[i]]);
-k[2]=h*(f[x[i]+0.5*h,y[i]+0.5*k[1]]);
-k[3]=h*(f[x[i]+0.5*h,y[i]+0.5*k[2]]);
-k[4]=h*(f[x[i+1],y[i]+k[3]]);
-y[i+1]=y[i]+(1/6)*(k[1]+2*k[2]+2*k[3]+k[4]);
-Print["Values at x[", i, "]= ", x[i], " is ", N[y[i]]]];
-f[x_,y_]=x*(y-x);
+traffic flow
+charBaseCurves2 = DSolve[{x'[t] == Exp[t], x[0] == x0}, x[t], t]
+tab =
+Table[x[t] /. charBaseCurves2〚1〛/. {x0 -> k}, {k, 4, 20, 4}]
+Plot[Evaluate[tab], {t, -4, 4}, PlotStyle -> Thickness[0.01],
+PlotLegends -> Table[tab〚i〛, {i, 1, 5}],
+PlotLabel -> "Characteristic base curves"]
+solution
+eqn2 = D[ρ[x, t], t] + Exp[t] * D[ρ[x, t], x] == 2 * ρ[x, t];
+sol2 =
+DSolve[{eqn2, ρ[x, 0] == 1 + Sin[x] * Sin[x]}, ρ[x, t], {x, t}]
