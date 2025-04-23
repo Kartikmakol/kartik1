@@ -73,7 +73,7 @@ If[Abs[int] ≤ M * L, "ML-inequality is verified for the integral",
 
 POLES, SERIES
 
-Find the series expansion of the function f(z) = sin z around the point z = 0. Plot the graph of the
+Q. Find the series expansion of the function f(z) = sin z around the point z = 0. Plot the graph of the
 polynomial consisting of the terms upto z^10 on [−2π, 2π] and compare it with the graph of f(z) as in the
 following picture. Find the coefficient of z^17 from the series.
 
@@ -128,3 +128,88 @@ z0= 0;
 f[z_]:= (Pi* Cot[Pi*z]) / z ^ 2
 SeriesCoefficient[f[z],{z, z0,-1}]
 Residue[f[z],{z, z0}]
+
+Q. Calculate the singularities of the function f(z) = z/((z − 1)(z^2 + 1)^2. Find the type of singularity at z = I.
+What is the residue of f at z = I?
+
+Answer
+f[z_]:=z/(z - 1)(z^2+1)^2
+z /. Solve[1 / f[z]==0, z]
+Reduce[1 / f[z]==0, z]
+Normal[Series[f[z], {z, I, 10}]]
+Manipulate[SeriesCoefficient[f[z], {z, I, n}], {n, 0, -100, 1}]
+(*The series contains only negative powers upto -2 hence it is pole of order 2*)
+Residue[f[z], {z, I}]
+
+Q. Find the poles and the corresponding residues for the function f(z) = 1/(z^3 − 1). Verify the Cauchy residue
+formula for the integral (Base C) f(z) dz, where C is the circle of radius 2 centred at 0 oriented anticlockwise.
+Explain each step.
+
+Answer
+f[z_]:=1/(z^3-1)
+s = z /. Solve[1 / f[z] == 0, z]
+{1, -(-1)^1/3, (-1)^2/3} (* Singularities*)
+{z1, z2, z3} = s;
+z[t_] := 2 Exp[2 Pi I t]
+Show[ParametricPlot[ReIm[z[t]], {t, 0, 1}],
+Graphics[{Red, Point[{ReIm[z1], ReIm[z2], ReIm[z3]}]}]]
+r1 = Residue[f[z], {z, z1}];
+r2 = Residue[f[z], {z, z2}];
+r3 = Residue[f[z], {z, z3}];
+int = Integrate[f[z[t]] * z'[t], {t, 0, 1}]
+If[Simplify[int == 2 Pi I (r1 + r2 + r3)], Print["Cauchy-Residue formula is verified"],
+Print["Cauchy-Residue formula Doesn't hold"]]
+
+POLYGON QUESTION
+For a fixed n ∈ N, create a list of all the nth roots of unity by solving the equation z^n = 1. Plot this list of
+points on the complex plane as in the following picture so that it is evident that the points are the vertices
+of a regular n-gon centred at 0.
+
+Answer
+n = 8;
+roots = y/. Solve[y^n==1, y]
+orroots = SortBy[roots, N[Arg[#]] &]
+root = Table[{Re[orroots[[k]]], Im[orroots[[k]]]}, {k, 1, Length[orroots]}]
+Graphics[{Gray, Circle[{0, 0}, 1], Red, Point[root], LightOrange, Polygon[root]},
+Axes -> True, AspectRatio -> 1, PlotRange -> {{-1.5, 1.5}, {-1.5, 1.5}}]
+
+LINEAR TRANSFORMATION
+f[z_] := 1 / z;
+RegionPlot[0.5 ≤ Sqrt[ x^2 + y^2] ≤ 1, {x, -2, 2}, {y, -2, 2}]
+w = u + I v;
+z = z /. Solve[w == f[z], z]〚1〛;
+ineq = ComplexExpand[0.5 ≤ Sqrt[ Re[z]^2 + Im[z]^2] ≤ 1];
+RegionPlot[ineq, {u, -3, 3}, {v, -3, 3}]
+
+INTEGRATION
+
+f[z_] := Exp[z]
+A = 0;
+B = 2 + Pi/4 *I;
+g[t_] := (1 - t) A + t * B
+ParametricPlot[{ReIm[g[t]]}, {t, 0, 1}]
+N[Integrate[f[g[t]] * g'[t], {t, 0, 1}]]
+
+GRIDS 
+h1[t_] = t + I;
+p1 = ParametricPlot[{Re[h1[t]], Im[h1[t]]}, {t, -2, 2}, PlotStyle -> Red];
+h2[t_] = t + (1 / 2) * I;
+p2 = ParametricPlot[{Re[h2[t]], Im[h2[t]]}, {t, -2, 2}, PlotStyle -> Blue];
+h3[t_] = t - I;
+p3 = ParametricPlot[{Re[h3[t]], Im[h3[t]]}, {t, -2, 2}, PlotStyle ->Yellow];
+h4[t_] = t - (1 / 2) * I;
+p4 = ParametricPlot[{Re[h4[t]], Im[h4[t]]}, {t, -2, 2}, PlotStyle ->Orange];
+h5[t_] = 1 + I * t;
+p5 = ParametricPlot[{Re[h5[t]], Im[h5[t]]}, {t, -2, 2}, PlotStyle -> Green];
+h6[t_] = -1 + I * t;
+p6 = ParametricPlot[{Re[h6[t]], Im[h6[t]]}, {t, -2, 2}, PlotStyle ->Pink];
+h7[t_] = (1 / 2) + I * t;
+p7 = ParametricPlot[{Re[h7[t]], Im[h7[t]]}, {t, -2, 2}, PlotStyle ->Gray];
+h8[t_] = -(1 / 2) + I * t;
+p8 = ParametricPlot[{Re[h8[t]], Im[h8[t]]}, {t, -2, 2}, PlotStyle ->LightBlue];
+Show[p1, p2, p3, p4, p5, p6, p7, p8, PlotRange  {{-3, 4}, {-3, 4}}]
+
+Ellipse
+g[t_] = Sqrt[3] * Cos[t] + Sqrt[2] * I * Sin[t]
+P1 = ParametricPlot[{Re[g[t]], Im[g[t]]}, {t, 0, 2 Pi}, Axes  True,
+AspectRatio -> 1, PlotStyle -> Blue, PlotRange -> {{-3, 3}, {-3, 3}}]
