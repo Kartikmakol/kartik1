@@ -1,48 +1,130 @@
-GENERAL SOLN OF 1ST AND 2ND ORDER PDE
-1st order
+ML INEQUALITY
+Q. Recall what was the value of the the integral (Base C) 1/(z − 2)dz, where C is the upper semicircle with radius 1
+centered at z = 2. Verify whether ML-inequality holds for the above integral.
 
-pde = y*D[u[x,y],x]+x*D[u[x,y],y];
-DSolve[pde==0,u[x,y],{x,y}]
+Answer
+f[z_] := 1/(z - 2)
+c1[t_] := Exp[Pi * I * t] + 2
+int = Integrate[f[c1[1 - t]] * c1 '[1 - t], {t, 0, 1}]
+L = Pi * 1;
+M = 1;
+If[Abs[int] ≤ M * L, Print["ML inequlity is verified for this integral"],
 
-2nd order
+Q. Show geometrically that the maximum modulus value of the function f(z) = 1/(z − i)
+is attained at 1 + i on the line segment L joining 1 and 1 + i as in the following picture.
+Find an upper bound for |Integration(Base L)f(z) dz| using ML-inequality, and verify the same.
 
-pde=(D[u[x,y],x]}^2- D[u[x,y],x]*D[u[x,y],y]-2*(D[u[x,y],y])^2;
-DSolve[pde==0,u[x,y],{x,y}]
+Answer
+f[z_] := 1 / (z - I)
+x[t_] := (1 - t) + t (1 + I)
+int = NIntegrate[f[x[t]] * x '[t], {t, 0, 1}]
+L = Abs[1 + I - 1]
+M = N[MaxValue[Abs[f[x[t]]], {t, 0, 1}]]
+If[Abs[int] ≤ M * L, "ML-inequality is verified for the integral",
+"ML-inequality does not hold"]
+Manipulate[Show[ParametricPlot[ReIm[x[t]], {t, 0, 1}],
+Graphics[{PointSize[Medium], Point[ReIm[I]],
+Point[ReIm[x[s]]], Red, Arrow[{ReIm[I], ReIm[x[s]]}]}]], {s, 0, 1}]
 
-SOLN WITH CAUCHY DATA AND PLOT INTEGRAL CURVE
+Q. Verify ML-inequality for the integral Integration(base C)z^2e^i|z|dz, where C is the closed loop shown below.
 
-pde = D[u[x,y], x] - D[u[x, y], y] == 1;
-sol = DSolve[{pde, u[x,0] == x^2}, u[x,y], {x, y}]
-Plot3D[u[x, y] /. sol, {x, -4, 4}, {y, -5, 5}, PlotLabel -> "Integral Surface"]
+Answer
+f[z_] := z ^ 2 Exp[I Abs[z]];
+z1[t_] := (1 - t) * 1 + t I;
+z2[t_] := (1 - t) * I + t (-1);
+z3[t_] := (1 - t) * (-1) + t (-I);
+z4[t_] := (1 - t) * (-I) + t * 1;
+z[t_] := Piecewise[{{z1[4 * t], 0 ≤ t < 1 / 4}, {z2[4 * t - 1], 1 / 4 ≤ t < 1 / 2},
+{z3[4 * t - 2], 1 / 2 ≤ t < 3 / 4}, {z4[4 * t - 3], 3 / 4 ≤ t ≤ 1}}];
+int = NIntegrate[f[z[t]] * z '[t], {t, 0, 1}]
+L = Integrate[Abs[z '[t]], {t, 0, 1}]
+M = NMaxValue[Abs[f[z[t]]], {t, 0, 1}]
+If[Abs[int] ≤ M * L, "ML-inequality is verified for the integral",
+"ML-inequality does not hold"]
+Manipulate[Show[ParametricPlot[ReIm[z[t]], {t, 0, 1}], Graphics[
+{Point[ReIm[0]], Point[ReIm[z[t]]], Red, Arrow[{ReIm[0], ReIm[z[t]]}]}]], {t, 0, 1}]
 
-vibrating string problem using D’Alembert/ 1D wave
+Q. Use ML-inequality to show that Integration(base C)1/(z^2 + 1)dz≤1/5 , where C is the straight line segment from 2 to 2 + i.
+While solving, represent the distance from the point z on the line segment to the points i and −i, respectively.
 
-f[x_] = Sin[x];    this is u(x,y)
-g[x_] = Cos[x];    this is ut(x,y)
-u[x_, t_] =1/2 (f[x + ct] + f(x - ct]) +1/2c Integration x-ct to x+ct g[y] dy;      esc dd esc
-u[x, t] // Simplify
+Answer
+f[z_] := 1 / (z ^ 2 + 1);
+g[t_] := 2 (1 - t) + t (2 + I);
+int = NIntegrate[f[z[t]] * g '[t], {t, 0, 1}]
+L = Abs[2 + I - 2]
+M = NMaxValue[Abs[f[g[t]]], {t, 0, 1}]
+If[Abs[int] ≤ M * L, "ML-inequality is verified for the integral",
+"ML-inequality does not hold"]
+Manipulate[
+Show[ParametricPlot[ReIm[g[t]], {t, 0, 1}, PlotRange  {{-1.5, 2.5}, {-1.5, 1.5}}],
+Graphics[{Red, Arrow[{ReIm[g[s]], ReIm[I]}], Arrow[{ReIm[g[s]], ReIm[-I]}], Blue, Point[ReIm[g[s]]]}, Axes -> True]], {s, 0, 1}]
 
-solution of 1D heat equation
+Q. Evaluate the maximum modulus value of the function f(z) = e^z on the line L joining 0 and 1 + i. Verify
+whether ML-inequality holds for the integral (base L)e^z dz.
 
-ut = 4 uxx, 0 < x < 1, t > 0,
-u(0, t) = 0 = u(1, t), t >= 0,
-u(x, 0) = x^2(1 - x), 0 <=x <= 1
-Clear[u, a, l]
-f[x_] = x^2 * (1 - x);
-l = 1;
-k = 4;
-a[n_] =2/l* Integrate[f[x] * Sin[(n pi x)/l ], {x, 0, 1}];
-a = a[n]
-u = sum n=1 infinity a * Exp[-((n pi)/1)^2 kt] * Sin[(n pi x)/l]
+Answer
+f[z_] := Exp[z]
+h[t_] := t * (1 + I)
+int = NIntegrate[f[h[t]] * h '[t], {t, 0, 1}]
+L = Abs[(1 + I) - 0]
+M = MaxValue[{ComplexExpand[Abs[f[h[t]]]], 0 ≤ t ≤ 1}, t]
+If[Abs[int] ≤ M * L, "ML-inequality is verified for the integral",
+"ML-inequality does not hold"]
 
-traffic flow
-charBaseCurves2 = DSolve[{x'[t] == Exp[t], x[0] == x0}, x[t], t]
-tab =
-Table[x[t] /. charBaseCurves2〚1〛/. {x0 -> k}, {k, 4, 20, 4}]
-Plot[Evaluate[tab], {t, -4, 4}, PlotStyle -> Thickness[0.01],
-PlotLegends -> Table[tab〚i〛, {i, 1, 5}],
-PlotLabel -> "Characteristic base curves"]
-solution
-eqn2 = D[ρ[x, t], t] + Exp[t] * D[ρ[x, t], x] == 2 * ρ[x, t];
-sol2 =
-DSolve[{eqn2, ρ[x, 0] == 1 + Sin[x] * Sin[x]}, ρ[x, t], {x, t}]
+POLES, SERIES
+
+Find the series expansion of the function f(z) = sin z around the point z = 0. Plot the graph of the
+polynomial consisting of the terms upto z^10 on [−2π, 2π] and compare it with the graph of f(z) as in the
+following picture. Find the coefficient of z^17 from the series.
+
+Answer
+series = Normal[Series[Sin[z], {z, 0, 10}]];
+Plot[{Sin[z], series}, {z, -2 Pi, 2 Pi},
+PlotLegends  {"Original function", "Series up to the term of z^{10}"},
+PlotStyle  {Blue, Orange}, PlotRange  All]
+SeriesCoefficient[Sin[z], {z, 0, 17}]
+
+Q. Find the type of singularity in each of the following cases. If it is a pole, then find its order also.
+(a) f(z) = 1/(z^4+z^3−2z^2) at z = 0.
+(b) f(z) = e^z/z^3 at z = 0.
+(c) f(z) = e^(1/z) at z = 0.
+(d) f(z) = (π cot(πz))/z^2 at z = 0
+
+Answer
+z0 = 0;
+f[z_] := 1 / (z ^ 4 + z ^ 3 - 2 z ^ 2)
+Series[f[z], {z, z0, 10}]
+Manipulate[SeriesCoefficient[f[z], {z, z0, n}], {n, z0, -100, 1}]
+(*The series contains only negative powers upto -2 hence it is pole of order 2*)
+
+z0 = 0;
+f[z_] := Exp[z]
+z3
+Series[f[z], {z, z0, 10}]
+Manipulate[SeriesCoefficient[f[z], {z, z0, n}], {n, z0, -100, 1}]
+(*The series contains only negative powers upto -3 hence it is pole of order 3*)
+
+z0 = 0;
+f[z_] := Exp[1/z]
+Normal[Series[f[z], {z, z0, 5}]]
+Manipulate[SeriesCoefficient[f[z], {z, z0, n}], {n, z0, -100, 1}]
+(*The series contains infinite negative powers hence it is essential singularity*)
+
+z0 = 0;
+f[z_] := (Pi * Cot[Pi * z]) / z ^ 2
+Normal[Series[f[z], {z, z0, 5}]]
+Manipulate[SeriesCoefficient[f[z], {z, z0, n}], {n, z0, -100, 1}]
+(*The series contains only negative powers upto -3 hence it is pole of order 3*)
+
+Q. Calculate the residues of the functions f(z) = e^z/z^3 and g(z) = (π cot(πz))/z^2 at z = 0.
+
+Answer
+z0 = 0;
+f[z_]:= Exp[z]/z^3
+SeriesCoefficient[f[z],{z, z0,-1}]
+Residue[f[z],{z, z0}]
+
+z0= 0;
+f[z_]:= (Pi* Cot[Pi*z]) / z ^ 2
+SeriesCoefficient[f[z],{z, z0,-1}]
+Residue[f[z],{z, z0}]
