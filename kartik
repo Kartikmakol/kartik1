@@ -1,215 +1,49 @@
-ML INEQUALITY
-Q. Recall what was the value of the the integral (Base C) 1/(z − 2)dz, where C is the upper semicircle with radius 1
-centered at z = 2. Verify whether ML-inequality holds for the above integral.
+QUESTION 
+Define m(z) = z2 and n(z) = iz, and find the image of the complex number z0 = 1 + i
+2 under m and n,  and illustrate the same graphically.
 
-Answer
-f[z_] := 1/(z - 2)
-c1[t_] := Exp[Pi * I * t] + 2
-int = Integrate[f[c1[1 - t]] * c1 '[1 - t], {t, 0, 1}]
-L = Pi * 1;
-M = 1;
-If[Abs[int] ≤ M * L, Print["ML inequlity is verified for this integral"],
+ANSWER
+z0=1+I/2;
+f[z_]:=z^2;
+g[z_]:=I*z;
+Graphics[{Blue,Point[{Re[z0],Im[z0]}],
+Line[{{0,0},{Re[z0],Im[z0]}}],Text["z0",1.15*{Re[z0],Im[z0]}],
+Orange,Point[{Re[f[z0]],Im[f[z0]]}],
+Line[{{0,0},{Re[f[z0]],Im[f[z0]]}}],Text["f(z0)",1.15*{Re[f[z0]],Im[f[z0]]}],
+Red,Point[{Re[g[z0]],Im[g[z0]]}],Line[{{0,0},{Re[g[z0]],Im[g[z0]]}}],Text["g(z0)",1.15*{Re[g[z0]],Im[g[z0]]}]},
+Axes->True,AspectRatio->1,PlotRange->{{-1.5,1.5}, {-1.5,1.5}}]
 
-Q. Show geometrically that the maximum modulus value of the function f(z) = 1/(z − i)
-is attained at 1 + i on the line segment L joining 1 and 1 + i as in the following picture.
-Find an upper bound for |Integration(Base L)f(z) dz| using ML-inequality, and verify the same.
+QUESTION
+LIST OF POINTS
 
-Answer
-f[z_] := 1 / (z - I)
-x[t_] := (1 - t) + t (1 + I)
-int = NIntegrate[f[x[t]] * x '[t], {t, 0, 1}]
-L = Abs[1 + I - 1]
-M = N[MaxValue[Abs[f[x[t]]], {t, 0, 1}]]
-If[Abs[int] ≤ M * L, "ML-inequality is verified for the integral",
-"ML-inequality does not hold"]
-Manipulate[Show[ParametricPlot[ReIm[x[t]], {t, 0, 1}],
-Graphics[{PointSize[Medium], Point[ReIm[I]],
-Point[ReIm[x[s]]], Red, Arrow[{ReIm[I], ReIm[x[s]]}]}]], {s, 0, 1}]
+ANSWER
+points=Table[t+I*t,{t,-1,1,0.1}];
+f[z_]:=z^2;
+g[z_]:=I*z;
+pointsF=f/@points;
+pointsG=g/@points;
+clst=Transpose[{Re[points],Im[points]}];
+clstF=Transpose[{Re[pointsF],Im[pointsF]}];
+clstG=Transpose[{Re[pointsG],Im[pointsG]}];
+Labeled[Graphics[{Blue,Point/@clst,Red,Point/@clstF,Orange,Point/@clstG},
+Axes->True, PlotRange->All,AspectRatio->1],
+Column[{Style["Points on y=x",Blue,14],Spacer[20],
+Style["Image under f(z) = z^2",Red,14],Spacer[20],
+Style["Image under g(z) = Iz", Orange,14]}],Right]
 
-Q. Verify ML-inequality for the integral Integration(base C)z^2e^i|z|dz, where C is the closed loop shown below.
+POINT - PARAMETRISATION OF PARABOLA Y=X^2
+f[z_]:=t+I*t^2
 
-Answer
-f[z_] := z ^ 2 Exp[I Abs[z]];
-z1[t_] := (1 - t) * 1 + t I;
-z2[t_] := (1 - t) * I + t (-1);
-z3[t_] := (1 - t) * (-1) + t (-I);
-z4[t_] := (1 - t) * (-I) + t * 1;
-z[t_] := Piecewise[{{z1[4 * t], 0 ≤ t < 1 / 4}, {z2[4 * t - 1], 1 / 4 ≤ t < 1 / 2},
-{z3[4 * t - 2], 1 / 2 ≤ t < 3 / 4}, {z4[4 * t - 3], 3 / 4 ≤ t ≤ 1}}];
-int = NIntegrate[f[z[t]] * z '[t], {t, 0, 1}]
-L = Integrate[Abs[z '[t]], {t, 0, 1}]
-M = NMaxValue[Abs[f[z[t]]], {t, 0, 1}]
-If[Abs[int] ≤ M * L, "ML-inequality is verified for the integral",
-"ML-inequality does not hold"]
-Manipulate[Show[ParametricPlot[ReIm[z[t]], {t, 0, 1}], Graphics[
-{Point[ReIm[0]], Point[ReIm[z[t]]], Red, Arrow[{ReIm[0], ReIm[z[t]]}]}]], {t, 0, 1}]
+PARAMETRISATION OF CIRCLE
+Exp[2*I*Pi*t]
 
-Q. Use ML-inequality to show that Integration(base C)1/(z^2 + 1)dz≤1/5 , where C is the straight line segment from 2 to 2 + i.
-While solving, represent the distance from the point z on the line segment to the points i and −i, respectively.
+PARAMETRISATION OF A SEMI CIRCLE
+Exp[I*Pi*t]
 
-Answer
-f[z_] := 1 / (z ^ 2 + 1);
-g[t_] := 2 (1 - t) + t (2 + I);
-int = NIntegrate[f[z[t]] * g '[t], {t, 0, 1}]
-L = Abs[2 + I - 2]
-M = NMaxValue[Abs[f[g[t]]], {t, 0, 1}]
-If[Abs[int] ≤ M * L, "ML-inequality is verified for the integral",
-"ML-inequality does not hold"]
-Manipulate[
-Show[ParametricPlot[ReIm[g[t]], {t, 0, 1}, PlotRange  {{-1.5, 2.5}, {-1.5, 1.5}}],
-Graphics[{Red, Arrow[{ReIm[g[s]], ReIm[I]}], Arrow[{ReIm[g[s]], ReIm[-I]}], Blue, Point[ReIm[g[s]]]}, Axes -> True]], {s, 0, 1}]
+PARAMETRISATION OF LINE SEGMENT FROM A TO B
+(1-t)*A+t*B
 
-Q. Evaluate the maximum modulus value of the function f(z) = e^z on the line L joining 0 and 1 + i. Verify
-whether ML-inequality holds for the integral (base L)e^z dz.
+OF ELLIPSE WITH a^2=3, b^2=2
+Sqrt[3]*Cos[t]+Sqrt[2]*Sin[t]
 
-Answer
-f[z_] := Exp[z]
-h[t_] := t * (1 + I)
-int = NIntegrate[f[h[t]] * h '[t], {t, 0, 1}]
-L = Abs[(1 + I) - 0]
-M = MaxValue[{ComplexExpand[Abs[f[h[t]]]], 0 ≤ t ≤ 1}, t]
-If[Abs[int] ≤ M * L, "ML-inequality is verified for the integral",
-"ML-inequality does not hold"]
 
-POLES, SERIES
-
-Q. Find the series expansion of the function f(z) = sin z around the point z = 0. Plot the graph of the
-polynomial consisting of the terms upto z^10 on [−2π, 2π] and compare it with the graph of f(z) as in the
-following picture. Find the coefficient of z^17 from the series.
-
-Answer
-series = Normal[Series[Sin[z], {z, 0, 10}]];
-Plot[{Sin[z], series}, {z, -2 Pi, 2 Pi},
-PlotLegends  {"Original function", "Series up to the term of z^{10}"},
-PlotStyle  {Blue, Orange}, PlotRange  All]
-SeriesCoefficient[Sin[z], {z, 0, 17}]
-
-Q. Find the type of singularity in each of the following cases. If it is a pole, then find its order also.
-(a) f(z) = 1/(z^4+z^3−2z^2) at z = 0.
-(b) f(z) = e^z/z^3 at z = 0.
-(c) f(z) = e^(1/z) at z = 0.
-(d) f(z) = (π cot(πz))/z^2 at z = 0
-
-Answer
-z0 = 0;
-f[z_] := 1 / (z ^ 4 + z ^ 3 - 2 z ^ 2)
-Series[f[z], {z, z0, 10}]
-Manipulate[SeriesCoefficient[f[z], {z, z0, n}], {n, z0, -100, 1}]
-(*The series contains only negative powers upto -2 hence it is pole of order 2*)
-
-z0 = 0;
-f[z_] := Exp[z]
-z3
-Series[f[z], {z, z0, 10}]
-Manipulate[SeriesCoefficient[f[z], {z, z0, n}], {n, z0, -100, 1}]
-(*The series contains only negative powers upto -3 hence it is pole of order 3*)
-
-z0 = 0;
-f[z_] := Exp[1/z]
-Normal[Series[f[z], {z, z0, 5}]]
-Manipulate[SeriesCoefficient[f[z], {z, z0, n}], {n, z0, -100, 1}]
-(*The series contains infinite negative powers hence it is essential singularity*)
-
-z0 = 0;
-f[z_] := (Pi * Cot[Pi * z]) / z ^ 2
-Normal[Series[f[z], {z, z0, 5}]]
-Manipulate[SeriesCoefficient[f[z], {z, z0, n}], {n, z0, -100, 1}]
-(*The series contains only negative powers upto -3 hence it is pole of order 3*)
-
-Q. Calculate the residues of the functions f(z) = e^z/z^3 and g(z) = (π cot(πz))/z^2 at z = 0.
-
-Answer
-z0 = 0;
-f[z_]:= Exp[z]/z^3
-SeriesCoefficient[f[z],{z, z0,-1}]
-Residue[f[z],{z, z0}]
-
-z0= 0;
-f[z_]:= (Pi* Cot[Pi*z]) / z ^ 2
-SeriesCoefficient[f[z],{z, z0,-1}]
-Residue[f[z],{z, z0}]
-
-Q. Calculate the singularities of the function f(z) = z/((z − 1)(z^2 + 1)^2. Find the type of singularity at z = I.
-What is the residue of f at z = I?
-
-Answer
-f[z_]:=z/(z - 1)(z^2+1)^2
-z /. Solve[1 / f[z]==0, z]
-Reduce[1 / f[z]==0, z]
-Normal[Series[f[z], {z, I, 10}]]
-Manipulate[SeriesCoefficient[f[z], {z, I, n}], {n, 0, -100, 1}]
-(*The series contains only negative powers upto -2 hence it is pole of order 2*)
-Residue[f[z], {z, I}]
-
-Q. Find the poles and the corresponding residues for the function f(z) = 1/(z^3 − 1). Verify the Cauchy residue
-formula for the integral (Base C) f(z) dz, where C is the circle of radius 2 centred at 0 oriented anticlockwise.
-Explain each step.
-
-Answer
-f[z_]:=1/(z^3-1)
-s = z /. Solve[1 / f[z] == 0, z]
-{1, -(-1)^1/3, (-1)^2/3} (* Singularities*)
-{z1, z2, z3} = s;
-z[t_] := 2 Exp[2 Pi I t]
-Show[ParametricPlot[ReIm[z[t]], {t, 0, 1}],
-Graphics[{Red, Point[{ReIm[z1], ReIm[z2], ReIm[z3]}]}]]
-r1 = Residue[f[z], {z, z1}];
-r2 = Residue[f[z], {z, z2}];
-r3 = Residue[f[z], {z, z3}];
-int = Integrate[f[z[t]] * z'[t], {t, 0, 1}]
-If[Simplify[int == 2 Pi I (r1 + r2 + r3)], Print["Cauchy-Residue formula is verified"],
-Print["Cauchy-Residue formula Doesn't hold"]]
-
-POLYGON QUESTION
-For a fixed n ∈ N, create a list of all the nth roots of unity by solving the equation z^n = 1. Plot this list of
-points on the complex plane as in the following picture so that it is evident that the points are the vertices
-of a regular n-gon centred at 0.
-
-Answer
-n = 8;
-roots = y/. Solve[y^n==1, y]
-orroots = SortBy[roots, N[Arg[#]] &]
-root = Table[{Re[orroots[[k]]], Im[orroots[[k]]]}, {k, 1, Length[orroots]}]
-Graphics[{Gray, Circle[{0, 0}, 1], Red, Point[root], LightOrange, Polygon[root]},
-Axes -> True, AspectRatio -> 1, PlotRange -> {{-1.5, 1.5}, {-1.5, 1.5}}]
-
-LINEAR TRANSFORMATION
-f[z_] := 1 / z;
-RegionPlot[0.5 ≤ Sqrt[ x^2 + y^2] ≤ 1, {x, -2, 2}, {y, -2, 2}]
-w = u + I v;
-z = z /. Solve[w == f[z], z]〚1〛;
-ineq = ComplexExpand[0.5 ≤ Sqrt[ Re[z]^2 + Im[z]^2] ≤ 1];
-RegionPlot[ineq, {u, -3, 3}, {v, -3, 3}]
-
-INTEGRATION
-
-f[z_] := Exp[z]
-A = 0;
-B = 2 + Pi/4 *I;
-g[t_] := (1 - t) A + t * B
-ParametricPlot[{ReIm[g[t]]}, {t, 0, 1}]
-N[Integrate[f[g[t]] * g'[t], {t, 0, 1}]]
-
-GRIDS 
-h1[t_] = t + I;
-p1 = ParametricPlot[{Re[h1[t]], Im[h1[t]]}, {t, -2, 2}, PlotStyle -> Red];
-h2[t_] = t + (1 / 2) * I;
-p2 = ParametricPlot[{Re[h2[t]], Im[h2[t]]}, {t, -2, 2}, PlotStyle -> Blue];
-h3[t_] = t - I;
-p3 = ParametricPlot[{Re[h3[t]], Im[h3[t]]}, {t, -2, 2}, PlotStyle ->Yellow];
-h4[t_] = t - (1 / 2) * I;
-p4 = ParametricPlot[{Re[h4[t]], Im[h4[t]]}, {t, -2, 2}, PlotStyle ->Orange];
-h5[t_] = 1 + I * t;
-p5 = ParametricPlot[{Re[h5[t]], Im[h5[t]]}, {t, -2, 2}, PlotStyle -> Green];
-h6[t_] = -1 + I * t;
-p6 = ParametricPlot[{Re[h6[t]], Im[h6[t]]}, {t, -2, 2}, PlotStyle ->Pink];
-h7[t_] = (1 / 2) + I * t;
-p7 = ParametricPlot[{Re[h7[t]], Im[h7[t]]}, {t, -2, 2}, PlotStyle ->Gray];
-h8[t_] = -(1 / 2) + I * t;
-p8 = ParametricPlot[{Re[h8[t]], Im[h8[t]]}, {t, -2, 2}, PlotStyle ->LightBlue];
-Show[p1, p2, p3, p4, p5, p6, p7, p8, PlotRange  {{-3, 4}, {-3, 4}}]
-
-Ellipse
-g[t_] = Sqrt[3] * Cos[t] + Sqrt[2] * I * Sin[t]
-P1 = ParametricPlot[{Re[g[t]], Im[g[t]]}, {t, 0, 2 Pi}, Axes  True,
-AspectRatio -> 1, PlotStyle -> Blue, PlotRange -> {{-3, 3}, {-3, 3}}]
