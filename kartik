@@ -31,6 +31,16 @@ Column[{Style["Points on y=x",Blue,14],Spacer[20],
 Style["Image under f(z) = z^2",Red,14],Spacer[20],
 Style["Image under g(z) = Iz", Orange,14]}],Right]
 
+VARYING VALUE / SLIDER
+f[z_]:=z^2;
+g[z_]:=I*z ;
+Manipulate[Graphics[{Green,Circle[{0,0},Abs[a+b*I]],Blue,Point[{Re[a+b*I],Im[a+b*I]}],
+Line[{{0,0},{Re[a+b*I],Im[a+b*I]}}],Text["z0",1.15*{Re[a+b*I],Im[a+b*I]}],
+Orange,Point[{Re[f[a+b*I]],Im[f[a+b*I]]}],
+Line[{{0,0},{Re[f[a+b*I]],Im[f[a+b*I]]}}],Text["f(z0)",1.15*{Re[f[a+b*I]],Im[f[a+b*I]]}],
+Red,Point[{Re[g[a+b*I]],Im[g[a+b*I]]}],Line[{{0,0},{Re[g[a+b*I]],Im[g[a+b*I]]}}],Text["g(z0)",1.15*{Re[g[a+b*I]],Im[g[a+b*I]]}]},
+Axes->True,AspectRatio->1]{a,-1.5,1.5}, {b,-1.5,1.5}]
+
 POINT - PARAMETRISATION OF PARABOLA Y=X^2
 f[z_]:=t+I*t^2
 
@@ -44,6 +54,24 @@ PARAMETRISATION OF LINE SEGMENT FROM A TO B
 (1-t)*A+t*B
 
 OF ELLIPSE WITH a^2=3, b^2=2
-Sqrt[3]*Cos[t]+Sqrt[2]*Sin[t]
+Sqrt[3]*Cos[t]+Sqrt[2]*I*Sin[t]
+
+FOR CONCENTRIC CIRCLE
+  r*Exp[2*I*Pi*t]
+
+For slider
+Manipulate[Module[{clst, clstF, clstG, pointsF, pointsG},
+
+VERTICLE LINE/CIRCLE SLIDER
+Manipulate[Module[{h, p, f}, f[z_] := Exp[z];
+h[t_] := a + I * t;
+p = ParametricPlot[{Re[h[t]], Im[h[t]]}, {t, -5, 5}, PlotStyle -> Blue];
+pTransformed = ParametricPlot[{Re[f[h[t]]], Im[f[h[t]]]}, {t, -5, 5}, PlotStyle -> Red];
+Show[p, pTransformed, AxesLabel -> {"Re", "Im"},
+PlotLabel -> "Mapping of Vertical Line under e^z",
+PlotRange -> {{-10, 10}, {-10, 10}}, GridLines -> Automatic]], {a, -5, 5, 0.1}]
+
+SHOWING PLOT
+Show[p1, p2, PlotRange  {{-1, 4}, {-2, 2.5}}]
 
 
